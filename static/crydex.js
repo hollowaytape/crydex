@@ -42,7 +42,11 @@ var bases = ['NidoranM', 'NidoranF', 'Slowpoke', 'Kangaskhan', 'Charmander', 'Gr
              'Bulbasaur', 'Spearow', 'Rhydon', 'Golem', 'Blastoise', 'Pidgeotto', 'Weedle',
              'Caterpie', 'Ekans', 'Fearow', 'Clefairy', 'Venonat', 'Lapras', 'Metapod', 'Squirtle',
              'Paras', 'Growlithe', 'Krabby', 'Psyduck', 'Rattata', 'Vileplume', 'Vulpix', 
-             'Weepinbell'];
+             'Weepinbell', 'Marill', 'Spinarak', 'Togepi', 'Girafarig', 'Raikou', 'Mareep',
+             'Togetic', 'Hoothoot', 'Sentret', 'Slowking', 'Cyndaquil', 'Chikorita', 'Totodile',
+             'Gligar', 'Cleffa', 'Slugma', 'Ledyba', 'Entei', 'Wooper', 'Mantine', 'Typhlosion',
+             'Natu', 'Teddiursa', 'Sunflora', 'Ampharos', 'Magcargo', 'Pichu', 'Aipom',
+             'Dunsparce', 'Donphan'];
 
 // Caterpie: descending p4 F-D
 // Slowpoke: ascending min6 D-B
