@@ -22,12 +22,14 @@ cells = tree.xpath(XPATH)
 #print cells
 
 # hex cells are nested in <tt> tags, so here they just show up as ''... but the decimals are usable
-names = cells[::14]
-bases = cells[11::14]
-pitches = cells[12::14]
-speeds = [x.rstrip() for x in cells[13::14]]   # remove newlines
 
-print names
-print bases
+# all values are surrounded by two spaces and maybe a \n, so strip those out
+names = [x.strip() for x in cells[::14]]
+bases = [x.strip() for x in cells[11::14]]
+pitches = [x.strip() for x in cells[12::14]]
+speeds = [x.strip() for x in cells[13::14]]   # remove newlines
+
+print pitches
+print speeds
 
 # TODO: Initialize them as Pokemon() objects and export the json.

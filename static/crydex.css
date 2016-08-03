@@ -15,6 +15,7 @@ body {
   /* Set the fixed height of the footer here */
   height: 60px;
   background-color: #f5f5f5;
+  overflow: scroll;
 }
 
 
@@ -29,4 +30,21 @@ body {
 }
 .container .text-muted {
   margin: 20px 0;
+}
+
+#graph-title {
+  margin: auto;
+}
+
+#graph {
+  position: relative;
+  background-color: yellow;
+  margin: auto;
+  width: 90%;
+}
+
+#graph:after {
+  content: "";
+  display: block;
+  padding-bottom: 100%;
 }
