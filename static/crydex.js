@@ -7,6 +7,9 @@ The entry with the same index in pokemonBases, pokemonPitches, and pokemonLength
 to that Pokemon.
 */
 
+// TODO: Is there any data on when certain sound channels are enabled/disabled?
+// There may be some useful stuff in the Crystal disassembly in cry.ASM.
+
 var pokemon = ['Bulbasaur', 'Ivysaur', 'Venusaur', 'Charmander', 'Charmeleon', 'Charizard',
                'Squirtle', 'Wartortle', 'Blastoise', 'Caterpie', 'Metapod', 'Butterfree', 
                'Weedle', 'Kakuna', 'Beedrill', 'Pidgey', 'Pidgeotto', 'Pidgeot', 'Rattata', 
@@ -45,7 +48,7 @@ var pokemon = ['Bulbasaur', 'Ivysaur', 'Venusaur', 'Charmander', 'Charmeleon', '
                'Magby', 'Miltank', 'Blissey', 'Raikou', 'Entei', 'Suicune', 'Larvitar', 'Pupitar', 
                'Tyranitar', 'Lugia', 'Ho-oh', 'Celebi '];
 
-var pokemonBases = [' 15', '15', '15', '4', '4', '4', '29', '29', '19', '22', '28', '22', '21', 
+var pokemonBases = ['15', '15', '15', '4', '4', '4', '29', '29', '19', '22', '28', '22', '21', 
                     '19', '19', '14', '20', '20', '34', '34', '16', '24', '23', '23', '15', '9', 
                     '0', '0', '1', '1', '10', '0', '0', '9', '25', '25', '36', '36', '14', '14', 
                     '29', '29', '8', '8', '35', '30', '30', '26', '26', '11', '11', '25', '25', 
@@ -90,7 +93,7 @@ var pokemonPitches = ['128', '32', '0', '96', '32', '0', '96', '32', '0', '128',
                       '-461', '659', '558', '0', '0', '95', '-475', '-256', '0', '0', '330']
 
 //
-var pokemonSpeeds = ['129', '256', '320', '192', '192', '256', '192', '192', '256', '160', '129', 
+var pokemonlengths = ['129', '256', '320', '192', '192', '256', '192', '192', '256', '160', '129', 
                      '192', '129', '129', '256', '132', '320', '383', '256', '383', '256', '288', 
                      '192', '144', '129', '136', '192', '383', '256', '352', '256', '256', '320', 
                      '256', '129', '160', '144', '224', '181', '224', '256', '256', '129', '192', 
@@ -118,8 +121,6 @@ var pokemonSpeeds = ['129', '256', '320', '192', '192', '256', '192', '192', '25
 ** A list of all base cries, by Pokemon name and in order in the ROM.
 */
 
-// TODO: Nidorina showing up both NidoranF and Golem bases?
-
 var bases = ['NidoranM', 'NidoranF', 'Slowpoke', 'Kangaskhan', 'Charmander', 'Grimer', 'Voltorb',
              'Muk', 'Oddish', 'Raichu', 'Nidoqueen', 'Diglett', 'Seel', 'Drowzee', 'Pidgey',
              'Bulbasaur', 'Spearow', 'Rhydon', 'Golem', 'Blastoise', 'Pidgeotto', 'Weedle',
@@ -141,6 +142,10 @@ function pokemonId(name) {
 	return pokemon.indexOf(name)+1;
 }
 
+function idSort(a, b) {
+  return pokemonId(a) - pokemonId(b);
+}
+
 function getBase(name) {
   return pokemonBases[pokemonId(name)-1];
 }
@@ -149,8 +154,9 @@ function getPitch(name) {
   return parseInt(pokemonPitches[pokemonId(name)-1]);
 }
 
-function getSpeed(name) {
-  return parseInt(pokemonSpeeds[pokemonId(name)-1]);
+function getLength(name) {
+  // lower length = faster
+  return parseInt(pokemonlengths[pokemonId(name)-1]);
 }
 
 function allWithBase(name) {
@@ -166,8 +172,10 @@ function allWithBase(name) {
 }
 
 $(document).ready(function() {
-	bases.forEach(function(cryParent) {
-		$('.baseHolder').append("<button type='button' class='btn btn-outline-primary' id='" + cryParent + "'>" + cryParent + "</button> ");
+  var basesCopy = bases.slice();
+  basesCopy.sort(idSort);
+	basesCopy.forEach(function(cryParent) {
+		$('.baseHolder').append("<button type='button' class='btn btn-primary' id='" + cryParent + "'>" + cryParent + "</button> ");
 		$('#'+ cryParent).click(function() {
 			var id = pokemonId(cryParent);
 			var base = getBase(cryParent)
@@ -178,17 +186,19 @@ $(document).ready(function() {
       $('#graph').text('');
       cryChildren.forEach(function(cryChild) {
 
-        // (x) speeds: all between 0-560
+        // (x) lengths: all between 0-576
         // (y) pitches: between -728-3904
 
-        var speed = getSpeed(cryChild);
+        // TODO: How to deal with outliers? Looks like almost everything is within a small rectangle, and it's skewing the representation a lot.
+
+        var length = getLength(cryChild);
         var pitch = getPitch(cryChild);
         
-        var xPos = (speed/560)*100;
+        var xPos = (length/576)*100;
         var yPos = ((pitch+728)/4632)*100;
 
         console.log(cryChild);
-        console.log("speed:", speed, "pitch", pitch);
+        console.log("length:", length, "pitch", pitch);
         console.log("x:", xPos, "y:", yPos);
 
         var style = "position: absolute; left: " + xPos + "%; bottom: " + yPos + "%;";
