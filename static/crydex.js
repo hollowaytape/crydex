@@ -7,6 +7,8 @@ The entry with the same index in pokemonBases, pokemonPitches, and pokemonLength
 to that Pokemon.
 */
 
+// thanks to http://meem123.deviantart.com/art/POKEMON-XY-AND-ORAS-GEN-6-MENU-SPRITES-ICONS-V8-435245381 for the pokemon icon sprites.
+
 // TODO: Is there any data on when certain sound channels are enabled/disabled?
 // There may be some useful stuff in the Crystal disassembly in cry.ASM.
 
@@ -175,7 +177,9 @@ $(document).ready(function() {
   var basesCopy = bases.slice();
   basesCopy.sort(idSort);
 	basesCopy.forEach(function(cryParent) {
-		$('.baseHolder').append("<button type='button' class='btn btn-primary' id='" + cryParent + "'>" + cryParent + "</button> ");
+    var id = pokemonId(cryParent);
+    var base = getBase(cryParent)
+		$('.baseHolder').append("<button type='button' class='btn btn-base' id='" + cryParent + "'>" + "<img src='static/img/" + id + ".png' /> " + cryParent + "</button> ");
 		$('#'+ cryParent).click(function() {
 			var id = pokemonId(cryParent);
 			var base = getBase(cryParent)
@@ -185,24 +189,35 @@ $(document).ready(function() {
 			$('#graph-title').html("<h2>#" + id + " " + cryParent + "</h2>");
       $('#graph').text('');
       cryChildren.forEach(function(cryChild) {
+        var id = pokemonId(cryChild)
 
-        // (x) lengths: all between 0-576
-        // (y) pitches: between -728-3904
+        // (x) lengths: all between 56-576
+        // (y) pitches, gen 1: between 0-255
+        //              gen 2: between -728-3904
 
         // TODO: How to deal with outliers? Looks like almost everything is within a small rectangle, and it's skewing the representation a lot.
+        // Consider taking the logarithm instead?
 
         var length = getLength(cryChild);
         var pitch = getPitch(cryChild);
         
-        var xPos = (length/576)*100;
-        var yPos = ((pitch+728)/4632)*100;
+        var xPos = ((length-56)/600)*100;
+
+        if (id <= 151) {
+          var yPos = (pitch/280)*100;
+        } else {
+          var yPos = ((pitch+728)/5000)*100;
+        }
+        
+        //var yPos = Math.log((pitch+728));
+        // maximum is 4632. 
 
         console.log(cryChild);
         console.log("length:", length, "pitch", pitch);
         console.log("x:", xPos, "y:", yPos);
 
         var style = "position: absolute; left: " + xPos + "%; bottom: " + yPos + "%;";
-        $('#graph').append("<a href='' id='" + cryChild + "' style='" + style + "'>" + cryChild + "</a>");
+        $('#graph').append("<button type='button' class='btn btn-cry' id='" + cryChild + "' style='" + style + "'>" + "<img src='static/img/" + pokemonId(cryChild) + ".png' /> " + cryChild + "</button>");
         $('#' + cryChild).click(function() {
           var childCry = new Audio('static/audio/' + pokemonId(cryChild) + '.mp3');
           childCry.play();
