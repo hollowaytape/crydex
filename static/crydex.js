@@ -9,9 +9,6 @@ to that Pokemon.
 
 // thanks to http://meem123.deviantart.com/art/POKEMON-XY-AND-ORAS-GEN-6-MENU-SPRITES-ICONS-V8-435245381 for the pokemon icon sprites.
 
-// TODO: Is there any data on when certain sound channels are enabled/disabled?
-// There may be some useful stuff in the Crystal disassembly in cry.ASM.
-
 var pokemon = ['Bulbasaur', 'Ivysaur', 'Venusaur', 'Charmander', 'Charmeleon', 'Charizard',
                'Squirtle', 'Wartortle', 'Blastoise', 'Caterpie', 'Metapod', 'Butterfree', 
                'Weedle', 'Kakuna', 'Beedrill', 'Pidgey', 'Pidgeotto', 'Pidgeot', 'Rattata', 
@@ -179,7 +176,7 @@ $(document).ready(function() {
 	basesCopy.forEach(function(cryParent) {
     var id = pokemonId(cryParent);
     var base = getBase(cryParent)
-		$('.baseHolder').append("<button type='button' class='btn btn-base' id='" + cryParent + "'>" + "<img src='static/img/" + id + ".png' /> " + cryParent + "</button> ");
+		$('.baseHolder').append("<button type='button' class='btn btn-base' id='" + cryParent + "'>" + "<img src='static/img/" + id + ".png' title='" + cryParent + "' /> " + "</button> ");
 		$('#'+ cryParent).click(function() {
 			var id = pokemonId(cryParent);
 			var base = getBase(cryParent)
@@ -191,35 +188,34 @@ $(document).ready(function() {
       cryChildren.forEach(function(cryChild) {
         var id = pokemonId(cryChild)
 
+        var length = getLength(cryChild);
+        var pitch = getPitch(cryChild);
+
         // (x) lengths: all between 56-576
         // (y) pitches, gen 1: between 0-255
         //              gen 2: between -728-3904
-
-        // TODO: How to deal with outliers? Looks like almost everything is within a small rectangle, and it's skewing the representation a lot.
-        // Consider taking the logarithm instead?
-
-        var length = getLength(cryChild);
-        var pitch = getPitch(cryChild);
         
         var xPos = ((length-56)/600)*100;
 
+        // hey, this data spread seems to work - no one outside, order seems fine
         if (id <= 151) {
-          var yPos = (pitch/280)*100;
+          var yPos = ((pitch+100)/380)*100;
         } else {
           var yPos = ((pitch+728)/5000)*100;
         }
-        
-        //var yPos = Math.log((pitch+728));
-        // maximum is 4632. 
 
         console.log(cryChild);
         console.log("length:", length, "pitch", pitch);
         console.log("x:", xPos, "y:", yPos);
 
         var style = "position: absolute; left: " + xPos + "%; bottom: " + yPos + "%;";
-        $('#graph').append("<button type='button' class='btn btn-cry' id='" + cryChild + "' style='" + style + "'>" + "<img src='static/img/" + pokemonId(cryChild) + ".png' /> " + cryChild + "</button>");
+
+        $('#graph').append("<img class='cry-icon' href='' src='static/img/" + pokemonId(cryChild) + ".png' id='" + cryChild + "' style='" + style + "' title='" + cryChild + "'/>");
         $('#' + cryChild).click(function() {
+          console.log("yeah you clicked");
           var childCry = new Audio('static/audio/' + pokemonId(cryChild) + '.mp3');
+          // TODO: Celebi cry not playing. (base Entei) No click event was set??
+          console.log(childCry);
           childCry.play();
           return false;
         });
