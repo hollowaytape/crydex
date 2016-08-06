@@ -42,6 +42,11 @@ body {
   background-color: #519E38;
 }
 
+
+.btn-base-active {
+  background-color: #519E38;
+}
+
 .btn-cry {
   background-color: #DCDBDC;
   display: block;

@@ -183,7 +183,15 @@ $(document).ready(function() {
 
       var cryChildren = allWithBase(cryParent);
 
-			$('#graph-title').html("<h2>#" + id + " " + cryParent + "</h2>");
+      var oldBaseMon = $('#graph-title').text();
+      $("#" + oldBaseMon).removeClass('btn-base-active');
+
+      $("#" + cryParent).addClass('btn-base-active');
+
+      var audio = new Audio('static/audio/' + pokemonId(cryParent) + '.mp3');
+      audio.play();      
+
+			$('#graph-title').html("<h2>" + cryParent + "</h2>");
       $('#graph').text('');
       cryChildren.forEach(function(cryChild) {
         var id = pokemonId(cryChild)
@@ -210,21 +218,26 @@ $(document).ready(function() {
 
         var style = "position: absolute; left: " + xPos + "%; bottom: " + yPos + "%;";
 
-        $('#graph').append("<img class='cry-icon' href='' src='static/img/" + pokemonId(cryChild) + ".png' id='" + cryChild + "' style='" + style + "' title='" + cryChild + "'/>");
-        $('#' + cryChild).click(function() {
-          console.log("yeah you clicked");
-          var childCry = new Audio('static/audio/' + pokemonId(cryChild) + '.mp3');
+        $('#graph').append("<img class='cry-icon' href='' src='static/img/" + pokemonId(cryChild) + ".png' id='" + cryChild + "-cry" + "' style='" + style + "' title='" + cryChild + "'/>");
+        $('#' + cryChild + "-cry").click(function() {
+          var cryId = pokemonId(cryChild.split('-')[0]);
+          var crySound = new Audio('static/audio/' + cryId + '.mp3');
           // TODO: Celebi cry not playing. (base Entei) No click event was set??
-          console.log(childCry);
-          childCry.play();
+          crySound.play();
           return false;
         });
       });
 
-			var audio = new Audio('static/audio/' + pokemonId(cryParent) + '.mp3');
-			audio.play();
+
 
 			return false;
 		});
 	});
+
+  //$('#prevBase').click(function() {
+  //  var oldBaseMon = $('#graph-title').text();
+
+
+  //  return false;
+  //}
 });
